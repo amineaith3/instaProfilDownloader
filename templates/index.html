@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Instagram Profile Picture</title>    
+    <link rel="stylesheet" href="static/css/styles.css"> <!-- Link to your CSS file -->
+</head>
+<body>
+    <header>
+        <h1>Download Instagram Profile Picture</h1>
+    </header>
+    <div class="container">
+        <form method="post">
+            <label for="username">Enter Instagram username:</label>
+            <input type="text" id="username" name="username" required>
+            <div class="buttons">
+                <input type="submit" value="Download">
+                <input type="reset" value="Reset" onclick="clearImageSection()">
+            </div>
+        </form>
+        <div id="image-section" style="{% if image_url %}display: block;{% else %}display: none;{% endif %}">
+            {% if image_url %}
+                <h2>Profile Picture for {{ request.form['username'] }}:</h2>
+                <img src="{{ image_url }}" alt="Profile Picture" class="profile-pic" id="profile-picture">
+            {% elif request.method == 'POST' %}
+                <p>The specified username does not exist.</p>
+            {% endif %}
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 sakuun_aah</p>
+    </footer>
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
