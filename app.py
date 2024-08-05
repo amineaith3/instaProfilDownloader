@@ -36,8 +36,9 @@ TEMP_DIR = 'static/jpg'
 
 @app.before_request
 def cleanup():
-    # Check if the request is a GET request
     if request.method == 'POST':
+        if not os.path.exists(TEMP_DIR):
+            os.makedirs(TEMP_DIR)
         # Delete all images in the temp directory before each GET request
         for filename in os.listdir(TEMP_DIR):
             file_path = os.path.join(TEMP_DIR, filename)
