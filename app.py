@@ -49,6 +49,10 @@ def terms():
 def contact():
     return render_template('contact.html')
 
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template('error.html'), 500
+
 
 TEMP_DIR = 'static/jpg'
 
