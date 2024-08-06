@@ -1,5 +1,4 @@
-Flask==3.0.3
-Flask-Login==0.6.3
-Flask-Mail==0.10.0
-Flask-PyMongo==2.3.0
-instaloader==4.12
+Flask==2.3.2
+instaloader==4.9.6
+Pillow==9.4.0
+requests==2.31.0
