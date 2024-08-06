@@ -12,7 +12,7 @@
     </header>
     <div class="container">
         <form method="post">
-            <label for="username">Enter Instagram username:</label>
+            <label for="username" style="text-align:center">Enter Instagram username:</label>
             <input type="text" id="username" name="username" required>
             <div class="buttons">
                 <input type="submit" value="Download">
@@ -27,10 +27,37 @@
                 <p>The specified username does not exist.</p>
             {% endif %}
         </div>
+        <!-- FAQ Section -->
+        <section class="faq">
+            <h2>Frequently Asked Questions (FAQ)</h2>
+            <div class="faq-item">
+                <h3 class="faq-question">What is this tool for?</h3>
+                <p class="faq-answer">This tool allows you to download Instagram profile pictures by entering the username.</p>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Is it free to use?</h3>
+                <p class="faq-answer">Yes, this tool is completely free to use.</p>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Do I need an Instagram account to use this tool?</h3>
+                <p class="faq-answer">No, you do not need an Instagram account to download profile pictures using this tool.</p>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Why can't I download the profile picture?</h3>
+                <p class="faq-answer">Ensure that the username is correct.</p>
+            </div>
+        </section>
     </div>
     <footer>
+        <nav>
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('about') }}">About Us</a>
+            <a href="{{ url_for('privacy') }}">Privacy Policy</a>
+            <a href="{{ url_for('terms') }}">Terms of Use</a>
+            <a href="{{ url_for('contact') }}">Contact Us</a>
+        </nav>
         <p>&copy; 2024 sakuun_aah</p>
     </footer>
-    <script src="/static/js/script.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
