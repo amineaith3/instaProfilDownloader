@@ -10,23 +10,28 @@
     <header>
         <h1>Download Instagram Profile Picture</h1>
     </header>
+    
     <div class="container">
         <form method="post">
-            <label for="username" style="text-align:center">Enter Instagram username:</label>
+            <label for="username">Enter Instagram username:</label>
             <input type="text" id="username" name="username" required>
             <div class="buttons">
                 <input type="submit" value="Download">
                 <input type="reset" value="Reset" onclick="clearImageSection()">
             </div>
         </form>
-        <div id="image-section" style="{% if image_url %}display: block;{% else %}display: none;{% endif %}">
-            {% if image_url %}
+        {% if error_message %}
+            <div class="error-message">{{ error_message }}</div>
+        {% endif %}
+        <div id="image-section" style="{% if image_data %}display: block;{% else %}display: none;{% endif %}">
+            {% if image_data %}
                 <h2>Profile Picture for {{ request.form['username'] }}:</h2>
-                <img src="{{ image_url }}" alt="Profile Picture" class="profile-pic" id="profile-picture">
+                <img src="data:image/jpeg;base64,{{ image_data }}" alt="Profile Picture" class="profile-pic" id="profile-picture">
             {% elif request.method == 'POST' %}
                 <p>The specified username does not exist.</p>
             {% endif %}
         </div>
+    
         <!-- FAQ Section -->
         <section class="faq">
             <h2>Frequently Asked Questions (FAQ)</h2>
@@ -44,10 +49,11 @@
             </div>
             <div class="faq-item">
                 <h3 class="faq-question">Why can't I download the profile picture?</h3>
-                <p class="faq-answer">Ensure that the username is correct.</p>
+                <p class="faq-answer">Ensure that the username is correct and the account is public. Private accounts' profile pictures cannot be downloaded.</p>
             </div>
         </section>
     </div>
+
     <footer>
         <nav>
             <a href="{{ url_for('index') }}">Home</a>

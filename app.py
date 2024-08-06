@@ -1,7 +1,11 @@
 from flask import Flask, request, render_template, url_for
 import instaloader
-import os
+import base64
+from io import BytesIO
 from datetime import datetime
+from PIL import Image
+from instaloader.exceptions import ProfileNotExistsException, ConnectionException
+import requests
 
 app = Flask(__name__)
 
@@ -10,28 +14,35 @@ def download_profile_picture(username):
         loader = instaloader.Instaloader()
         profile = instaloader.Profile.from_username(loader.context, username)
         image_url = profile.profile_pic_url
-        username = 'jpg/' + username
-        image_path = os.path.join('static', username)
-        loader.download_pic(image_path, image_url, mtime=datetime.now())
-        return username
-    except instaloader.exceptions.ProfileNotExistsException:
+        
+        # Download the image
+        response = requests.get(image_url)
+        img = Image.open(BytesIO(response.content))
+        
+        # Convert the image to a base64 string
+        buffered = BytesIO()
+        img.save(buffered, format="JPEG")
+        img_str = base64.b64encode(buffered.getvalue()).decode()
+        
+        return img_str
+    except ProfileNotExistsException:
         return None
+    except ConnectionException:
+        return "Connection error"
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    image_filename = None
+    image_data = None
+    error_message = None  # Variable to store error messages
     if request.method == 'POST':
         username = request.form['username']
-        image_filename = download_profile_picture(username)
-        if image_filename:
-            image_url = url_for('static', filename=image_filename) + '.jpg'
-        else:
-            image_url = None
-    else:
-        image_url = None
-
-    return render_template('index.html', image_url=image_url)
-
+        image_data = download_profile_picture(username)
+        if image_data == "Connection error":
+            error_message = "Could not connect to Instagram. Please try again later."
+            image_data = None
+        elif image_data is None:
+            error_message = "The specified username does not exist."
+    return render_template('index.html', image_data=image_data, error_message=error_message)
 
 @app.route('/about')
 def about():
@@ -49,29 +60,15 @@ def terms():
 def contact():
     return render_template('contact.html')
 
+# Error handler for 500 Internal Server Error
 @app.errorhandler(500)
 def internal_error(error):
     return render_template('error.html'), 500
 
-
-TEMP_DIR = 'static/jpg'
-
-@app.before_request
-def cleanup():
-    if request.method == 'POST':
-        if not os.path.exists(TEMP_DIR):
-            os.makedirs(TEMP_DIR)
-        # Delete all images in the temp directory before each GET request
-        for filename in os.listdir(TEMP_DIR):
-            file_path = os.path.join(TEMP_DIR, filename)
-            try:
-                os.remove(file_path)
-            except Exception as e:
-                print(f"Error deleting file {file_path}: {e}")
-
-
+# Error handler for ConnectionException
+@app.errorhandler(ConnectionException)
+def handle_connection_exception(error):
+    return render_template('error.html', message="Connection error. Please try again later."), 500
 
 if __name__ == '__main__':
-    if not os.path.exists('static'):
-        os.makedirs('static')
     app.run(debug=True)

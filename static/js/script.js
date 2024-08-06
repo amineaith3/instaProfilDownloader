@@ -1,8 +1,3 @@
-function clearImageSection() {
-    const imageSection = document.getElementById('image-section');
-    imageSection.style.display = 'none'; // Hide the entire image section
-}
-
 document.addEventListener('DOMContentLoaded', function() {
     const faqItems = document.querySelectorAll('.faq-item');
 
@@ -14,3 +9,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+function clearImageSection() {
+    const imageSection = document.getElementById('image-section');
+    imageSection.style.display = 'none'; // Hide the entire image section
+}
